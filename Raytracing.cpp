@@ -1,4 +1,14 @@
+/*
+
+TODO
+
+Use obstacle bounding box to determine whether a ray intersects an obstacle.
+Use it to determine whether one vertice is on the object's non-visible side.
+
+*/
+
 #include <cmath>
+#include <iostream>
 
 #include <SFML/Graphics.hpp>
 
@@ -15,15 +25,16 @@ int main(int argc, char* argv[])
 	RenderWindow window(VideoMode(600, 600), "Raytracing");
 
 	// Hide normal mouse cursor
-	window.setMouseCursorVisible(false);
+	// window.setMouseCursorVisible(false);
 
 	// Create an obstacle
 	Obstacle myObstacle(Vector2f(100.f, 50.f));
+	myObstacle.setPosition(400.f, 230.f);
 
 	// Game loop
 	while (window.isOpen())
 	{
-		myObstacle.setPosition(400.f, 230.f);
+		// Handle events
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -31,6 +42,38 @@ int main(int argc, char* argv[])
 				window.close();
 		}
 
+		// Update
+
+		// Get all points
+		vector<CircleShape*> points = myObstacle.GetAllPoints();
+
+		// Find closest point to mouse
+		CircleShape* closest = nullptr;
+		for (CircleShape* point : points)
+		{
+			point->setFillColor(POINT_COLOR);
+
+			if (closest == nullptr)
+			{
+				closest = point;
+			}
+			else
+			{
+				if (DistanceBetween((Vector2f)Mouse::getPosition(window), point->getPosition()) <
+					DistanceBetween((Vector2f)Mouse::getPosition(window), closest->getPosition()))
+				{
+					closest = point;
+				}
+			}
+		}
+
+		// Highlight closest
+		if (closest != nullptr)
+		{
+			closest->setFillColor(Color::Green);
+		}
+
+		// Render
 		window.clear();
 		window.draw(myObstacle);
 		window.display();

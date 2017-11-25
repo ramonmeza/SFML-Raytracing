@@ -22,6 +22,9 @@ public:
 	void setPosition(sf::Vector2f position);
 	void setPosition(float x, float y);
 
+	// Get rid of this. It's not good. Don't make private members public like this.
+	std::vector<sf::CircleShape*> GetAllPoints() { return m_Points; };
+	
 protected:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
